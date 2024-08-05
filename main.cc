@@ -8,6 +8,12 @@ using namespace std;
 class Camera;
 class Entity;
 
+class Block {
+	public:
+		int id;
+		Block();
+};
+
 Block::Block()
 {
 	id = BLOCK_VOID;
@@ -67,9 +73,14 @@ Camera::render()
 	for (int i = 0 ; i < n_width_block; i++) {
 		for (int j = 0; j < n_height_block; j++) {
 			SDL_Rect rect = { - x_origin + i * scale, - y_origin + j * scale , scale, scale};
-			SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
-			SDL_RenderDrawRect(renderer, &rect);
-			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+			if (!((j + i) % 2)) {
+				SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
+				SDL_RenderDrawRect(renderer, &rect);
+			} else {
+				SDL_SetRenderDrawColor(renderer, 200, 0, 0, 255);
+				SDL_RenderFillRect(renderer, &rect);
+			}
+			//SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		}
 	}
 }
@@ -84,18 +95,12 @@ Camera::zoom_in(int factor)
 bool
 Camera::zoom_out(int factor)
 {
-	if ((factor + scale) * world->width <= width && (factor + scale) * world->height <= height) {
-		scale+= factor;
+	if (ceil(width / scale) + 1 <= world->width && ceil(height / scale) + 1 <= world->height) {
+		scale -= factor;
 		return true;
 	}
 	return false;
 }
-
-class Block {
-	public:
-		int id;
-		Block();
-};
 
 class Entity {
 	public:
@@ -140,14 +145,14 @@ main(int argc, char *argv[])
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 		cerr << "error: can't init SDL: " << SDL_GetError();
-	World world(100, 100);
-	Camera camera(&world, 500, 500, 50, 50, 8);
+	World world(50, 50);
+	Camera camera(&world, 1000, 1000, 25, 25, 80);
 	SDL_Rect background;
 	background.x = 0;
 	background.y = 0;
-	background.w = 500;
-	background.h = 500;
-	Entity ent = Entity(250, 250);
+	background.w = 1000;
+	background.h = 1000;
+	Entity ent = Entity(500, 500);
 	ent.velocity[0] = 0;
 	ent.velocity[1] = 0;
 	close = false;

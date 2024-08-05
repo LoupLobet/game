@@ -1,8 +1,12 @@
 CC=clang++
-LIBS=-L/usr/lib
-INCS=-I/usr/include
+# Linux Uncomment
+#LIBS=-L/usr/lib
+#INCS=-I/usr/include
+# OSX Uncomment
+LIBS=-L/opt/homebrew/lib
+INCS=-I/opt/homebrew/include
 CFLAGS=-Wall -pedantic $(INCS) -pipe
-LDFLAGS=-lSDL2 $(INCS)
+LDFLAGS=$(LIBS) -lSDL2
 
 all: main
 
